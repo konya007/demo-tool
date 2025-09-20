@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Number Spinner - Minigame</title>
+    <link rel="stylesheet" href="assets/css/minigame.css">
+</head>
+<body>
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-panel active">
+        <div class="admin-container">
+            <!-- <h1 class="admin-title">🎰 Lucky Number Spinner Admin</h1> -->
+            
+            <div class="admin-form">
+                <div class="form-group">
+                    <label for="luckyCount">Số lượng số may mắn cần quay:</label>
+                    <input type="number" id="luckyCount" min="1" max="50" value="10" class="input-field">
+                </div>
+
+                <div class="form-group">
+                    <label for="participantData">Danh sách người tham gia (Tên + Tab + Số):</label>
+                    <textarea id="participantData" rows="15" class="textarea-field" placeholder=
+"number 1
+number 2
+number 3
+                    "></textarea>
+                </div>
+
+                <div class="settings-row">
+                    <div class="form-group">
+                        <label for="spinDuration">Thời gian quay (giây):</label>
+                        <input type="number" id="spinDuration" min="1" max="10" value="5" step="0.5" class="input-field">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sfxVolume">Âm lượng SFX (%):</label>
+                        <input type="range" id="sfxVolume" min="0" max="100" value="70" class="volume-slider">
+                        <span class="volume-display">70%</span>
+                    </div>
+                </div>
+
+                <div class="admin-buttons">
+                    <button id="startGame" class="btn-primary">🎯 Bắt đầu trò chơi</button>
+                    <button id="testAudio" class="btn-secondary">🔊 Test âm thanh</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Presentation Panel -->
+    <div id="presentationPanel" class="presentation-panel">
+        <div class="presentation-container">
+            <div class="game-header">
+                <!-- <h1 class="game-title">🎰 QUAY SỐ MAY MẮN</h1> -->
+                <div class="progress-container">
+                    <div class="progress-info">
+                        <span id="progressText">0 / 10</span>
+                        <span class="progress-label">Số may mắn</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="spinner-container">
+                <div class="spinner-frame">
+                    <div id="spinner" class="spinner">
+                        <div class="number-strip" id="numberStrip">
+                            <!-- Numbers will be generated here -->
+                        </div>
+                    </div>
+                    <div class="spinner-indicator"></div>
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <button id="spinButton" class="spin-button">
+                    <span class="button-text">🎯 QUAY SỐ</span>
+                    <div class="button-glow"></div>
+                </button>
+                
+                <div class="control-buttons">
+                    <button id="backToAdmin" class="btn-back">⚙️ Cài đặt</button>
+                    <button id="resetGame" class="btn-reset">🔄 Reset</button>
+                </div>
+            </div>
+
+            <div class="winners-section">
+                <h3>🏆 Danh sách may mắn:</h3>
+                <div id="winnersList" class="winners-list">
+                    <!-- Winners will appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Winner Modal -->
+    <div id="winnerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎉 CHÚC MỪNG!</h2>
+            </div>
+            <div class="modal-body">
+                <div class="confetti-container">
+                    <!-- Confetti animation -->
+                </div>
+                <div class="winner-info">
+                    <div class="winner-avatar">🏆</div>
+                    <h3 id="winnerName" class="winner-name"></h3>
+                    <p id="winnerNumber" class="winner-number"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="continueButton" class="btn-continue">Tiếp tục</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion Modal -->
+    <div id="completionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎊 HOÀN THÀNH!</h2>
+            </div>
+            <div class="modal-body">
+                <div class="completion-message">
+                    <h3>Đã quay xong tất cả số may mắn!</h3>
+                    <p>Chúc mừng tất cả những người may mắn!</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="newGameButton" class="btn-continue">Trò chơi mới</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/minigame.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+[
+    {
+        "title": "Nhạc dạo",
+        "playlist": [
+            {
+                "title": "Always Together",
+                "path": "./audio/nhacDao/Always Together.mp3",
+                "startLoop": 0.9,
+                "endLoop": 124
+            },
+            {
+                "title": "Herta-Space",
+                "path": "./audio/nhacDao/Herta-Space.mp3",
+                "startLoop": null,
+                "endLoop": null
+            },
+            {
+                "title": "Infinity-Castle-Theme-Demon-slayer-S4-E8-OST",
+                "path": "./audio/nhacDao/Infinity-Castle-Theme-Demon-slayer-S4-E8-OST.mp3",
+                "startLoop": null,
+                "endLoop": null
+            },
+            {
+                "title": "Our-Town-Our-Life-Project-SEKAI-COLORFUL-STAGE-OST",
+                "path": "./audio/nhacDao/Our-Town-Our-Life-Project-SEKAI-COLORFUL-STAGE-OST.mp3",
+                "startLoop": null,
+                "endLoop": null
+            },
+            {
+                "title": "キミと-その先の未来へ",
+                "path": "./audio/nhacDao/キミと-その先の未来へ.mp3",
+                "startLoop": null,
+                "endLoop": null
+            }
+        ]
+    },
+    {
+        "title": "Văn nghệ",
+        "playlist": [
+            {
+                "title": "BLOCKBUSTER RIHANNA",
+                "path": "./audio/vanNghe/BLOCKBUSTER_RIHANNA.MP3",
+                "startLoop": null,
+                "endLoop": null
+            },
+            {
+                "title": "CNTT - Unknown",
+                "path": "./audio/vanNghe/CNTT_NhayGiDo.mp3",
+                "startLoop": null,
+                "endLoop": null
+            }
+        ]
+    },
+    {
+        "title": "Minigame - Break time",
+        "playlist": [
+            {
+                "title": "Nhạc xổ số",
+                "path": "./audio/minigame-breaktime/Nhạc Xổ số Kiến thiết miền Bắc Bản kinh điển - KHÔNG QUẢNG CÁO.mp3",
+                "startLoop": null,
+                "endLoop": null
+            }
+        ]
+    },
+    {
+        "title": "Giới thiệu đại biểu",
+        "playlist": [
+            {
+                "title": "Nhạc tiến vào hội",
+                "path": "./audio/gioiThieu-daiBieu/Nhạc-sự-kiện-BNA-C11-Nhạc-tiến-vào-hội.mp3",
+                "startLoop": null,
+                "endLoop": null
+            },
+            {
+                "title": "Nhạc tặng hoa quà",
+                "path": "./audio/gioiThieu-daiBieu/Nhạc-tặng-hoaquà.mp3",
+                "startLoop": null,
+                "endLoop": null
+            }
+        ]
+    },
+
+    {
+        "title": "Trao giải - Chúc mừng",
+        "playlist": [
+            {
+                "title": "Bond - Fuego (official video)",
+                "path": "./audio/traoGiai-chucMung/Bond - Fuego (official video).mp3",
+                "startLoop": null,
+                "endLoop": null
+            },
+            {
+                "title": "Disfigure Blank Melodic Dubstep NCS Copyright",
+                "path": "./audio/traoGiai-chucMung/Disfigure-Blank-Melodic-Dubstep-NCS-Copyright.mp3",
+                "startLoop": null,
+                "endLoop": null
+            },
+            {
+                "title": "Nhạc vinh danh cá nhân tập thể ｜Album nhạc sự kiện.mp3",
+                "path": "./audio/traoGiai-chucMung/Nhạc vinh danh cá nhân tập thể ｜Album nhạc sự kiện.mp3",
+                "startLoop": null,
+                "endLoop": null
+            },
+            {
+                "title": "NHẠC-TRAO-GIẢI-THƯỞNG.mp3",
+                "path": "./audio/traoGiai-chucMung/NHẠC-TRAO-GIẢI-THƯỞNG.mp3",
+                "startLoop": null,
+                "endLoop": null
+            }
+        ]
+    }
+    
+]

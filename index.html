@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mix DJ Player</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval';">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mix DJ Controller</h1>
+        </div>
+
+        <div class="players-container" id="playersContainer">
+            <!-- Players will be dynamically generated here -->
+        </div>
+    </div>
+
+    <!-- Fixed Player Bar at Bottom -->
+    <div class="fixed-player-bar" id="fixedPlayerBar">
+        <div class="player-info">
+            <div class="current-playing">
+                <div class="track-title" id="globalTrackTitle">Chưa phát nhạc</div>
+                <div class="track-category" id="globalTrackCategory">-</div>
+            </div>
+            <div class="time-info">
+                <span id="globalCurrentTime">00:00</span> / 
+                <span id="globalDuration">00:00</span>
+            </div>
+        </div>
+        
+        <div class="player-controls">
+            <div class="main-player-controls">
+                <button class="global-play-btn" id="globalPlayBtn">▶</button>
+                <div class="global-seek-container">
+                    <input type="range" id="globalSeek" min="0" max="100" value="0" step="0.1" class="global-seek-bar" title="Global seek">
+                </div>
+            </div>
+            
+            <div class="player-options">
+                <label class="option-item">
+                    <input type="checkbox" id="globalLoop"> Loop
+                </label>
+                <label class="option-item">
+                    <input type="checkbox" id="globalFadeIn" checked> Fade In
+                </label>
+                <label class="option-item">
+                    <input type="checkbox" id="globalFadeOut" checked> Fade Out
+                </label>
+                <label class="option-item">
+                    <input type="checkbox" id="globalVolumeMode" checked> Volume tổng
+                </label>
+            </div>
+        </div>
+        
+        <div class="master-volume-section">
+            <label>Master Volume:</label>
+            <div class="volume-slider-container">
+                <input type="range" id="globalVolume" min="0" max="100" value="70" class="volume-slider" title="Master Volume Control">
+                <span class="volume-display">70%</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
+
