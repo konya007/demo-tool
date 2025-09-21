@@ -69,7 +69,7 @@ body {
 }
 
 .volume-slider {
-    width: 120px;
+    width: 240px;
     height: 8px;
     border-radius: 4px;
     background: #555;
@@ -530,7 +530,7 @@ body {
 }
 
 .master-volume-section .volume-slider {
-    width: 100px;
+    width: 240px;
 }
 
 .master-volume-section .volume-display {
