@@ -8,6 +8,10 @@ class LuckyNumberSpinner {
         this.isSpinning = false;
         this.currentSpinIndex = 0;
         
+        // Track spinner position for continuity
+        this.lastWinnerIndex = -1;
+        this.currentStripPosition = 0;
+        
         // Audio elements
         this.kickAudio = null;
         this.applauseAudio = null;
@@ -130,8 +134,7 @@ class LuckyNumberSpinner {
 
     generateNumbers() {
         const numberStrip = document.getElementById('numberStrip');
-        numberStrip.innerHTML = '';
-
+        
         // Get available participants
         const availableParticipants = this.participants.filter(p => 
             !this.winners.some(w => w.id === p.id)
@@ -139,7 +142,20 @@ class LuckyNumberSpinner {
 
         if (availableParticipants.length === 0) return;
 
-        // Create better randomized list - mix participants multiple times
+        // For continuity: if this is not the first spin, preserve some items and continue
+        if (this.winners.length > 0 && this.lastWinnerIndex >= 0) {
+            this.generateContinuousNumbers(availableParticipants);
+        } else {
+            // First spin: clear and generate fresh
+            numberStrip.innerHTML = '';
+            this.generateFreshNumbers(availableParticipants);
+        }
+    }
+
+    generateFreshNumbers(availableParticipants) {
+        const numberStrip = document.getElementById('numberStrip');
+        
+        // Create better randomized list - mix participants multiple times for 100 items
         const virtualStack = [];
         
         // Create 30 cycles of shuffled participants to ensure variety
@@ -188,6 +204,59 @@ class LuckyNumberSpinner {
         numberStrip.style.transition = '';
     }
 
+    generateContinuousNumbers(availableParticipants) {
+        const numberStrip = document.getElementById('numberStrip');
+        const existingItems = Array.from(numberStrip.children);
+        
+        // Take last 5 items and move them to the beginning for continuity
+        const lastFiveItems = existingItems.slice(-5);
+        
+        // Clear the strip
+        numberStrip.innerHTML = '';
+        
+        // Add the last 5 items first (for smooth transition)
+        lastFiveItems.forEach((item, index) => {
+            const clonedItem = item.cloneNode(true);
+            clonedItem.setAttribute('data-index', index);
+            clonedItem.classList.remove('highlight'); // Remove any previous highlighting
+            numberStrip.appendChild(clonedItem);
+        });
+        
+        // Generate new random items starting from index 5
+        const startIndex = 5;
+        const targetTotal = 100; // Total items we want
+        const itemsToGenerate = targetTotal - startIndex;
+        
+        for (let i = 0; i < itemsToGenerate; i++) {
+            // Create shuffled list for variety
+            const shuffled = [...availableParticipants];
+            for (let j = shuffled.length - 1; j > 0; j--) {
+                const k = Math.floor(Math.random() * (j + 1));
+                [shuffled[j], shuffled[k]] = [shuffled[k], shuffled[j]];
+            }
+            
+            const randomParticipant = shuffled[Math.floor(Math.random() * shuffled.length)];
+            const numberItem = document.createElement('div');
+            numberItem.className = 'number-item';
+            numberItem.setAttribute('data-index', startIndex + i);
+            numberItem.innerHTML = `
+                <div>
+                    <div style="font-size: 0.7em; margin-bottom: 5px;">${randomParticipant.name}</div>
+                    <div style="color: #4ecdc4;">${randomParticipant.id}</div>
+                </div>
+            `;
+            numberStrip.appendChild(numberItem);
+        }
+        
+        // Set initial position to show the transition from last 5 items
+        const itemHeight = 120;
+        this.currentStripPosition = 0; // Start from top to show the continued items
+        numberStrip.style.transform = `translateY(${this.currentStripPosition}px)`;
+        numberStrip.style.transition = '';
+        
+        console.log('Generated continuous numbers starting with last 5 items');
+    }
+
     prepareWinningItems(targetWinner) {
         const numberStrip = document.getElementById('numberStrip');
         
@@ -234,6 +303,9 @@ class LuckyNumberSpinner {
         console.log(`Prepared winning items. Winner: ${targetWinner.name} at index 100`);
         console.log(`Total items in strip: ${numberStrip.children.length}`);
         
+        // Store the winner index for next spin continuity
+        this.lastWinnerIndex = 100;
+        
         return 100; // Always return index 100 (item 101)
     }
 
@@ -244,10 +316,10 @@ class LuckyNumberSpinner {
             !this.winners.some(w => w.id === p.id)
         );
 
-        if (availableParticipants.length === 0) {
-            this.showCompletionModal();
-            return;
-        }
+        // if (availableParticipants.length === 0) {
+        //     this.showCompletionModal();
+        //     return;
+        // }
 
         this.isSpinning = true;
         document.getElementById('spinButton').disabled = true;
@@ -278,7 +350,7 @@ class LuckyNumberSpinner {
         if (this.winners.length < this.luckyCount) {
             document.getElementById('spinButton').disabled = false;
         } else {
-            setTimeout(() => this.showCompletionModal(), 2000);
+            // setTimeout(() => this.showCompletionModal(), 2000);
         }
     }
 
@@ -292,8 +364,18 @@ class LuckyNumberSpinner {
         const containerHeight = 600; // Container height
         const centerOffset = (containerHeight / 2) - (itemHeight / 2);
         
-        // Start from current position (usually 0)
-        const startPosition = 0;
+        // Start from current position for continuity
+        const currentTransform = numberStrip.style.transform;
+        let startPosition = 0;
+        if (currentTransform && currentTransform.includes('translateY')) {
+            const match = currentTransform.match(/translateY\((-?\d+(?:\.\d+)?)px\)/);
+            if (match) {
+                startPosition = parseFloat(match[1]);
+            }
+        }
+        
+        // Store current position for next spin
+        this.currentStripPosition = startPosition;
         
         // No cycle bonus - direct approach to target
         const fullCycles = 0;
@@ -373,6 +455,9 @@ class LuckyNumberSpinner {
                 numberStrip.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
                 numberStrip.style.transform = `translateY(${finalPosition}px)`;
                 
+                // Store final position for next spin continuity
+                this.currentStripPosition = finalPosition;
+                
                 // Highlight the winner after positioning
                 setTimeout(() => {
                     const allItems = numberStrip.querySelectorAll('.number-item');
@@ -383,10 +468,10 @@ class LuckyNumberSpinner {
                         }
                     });
                     
-                    // Reset and prepare for next spin
+                    // Reset and prepare for next spin with continuity
                     setTimeout(() => {
                         numberStrip.style.transition = '';
-                        // Auto-regenerate for next spin
+                        // Auto-regenerate for next spin (will use continuity if not first spin)
                         setTimeout(() => {
                             if (this.winners.length < this.luckyCount) {
                                 this.generateNumbers();
@@ -429,7 +514,7 @@ class LuckyNumberSpinner {
         const winnerNumber = document.getElementById('winnerNumber');
         
         winnerName.textContent = winner.name;
-        winnerNumber.textContent = `ID: ${winner.id}`;
+        winnerNumber.textContent = `MSSV: ${winner.id}`;
         
         modal.classList.add('active');
         this.createConfetti();
@@ -459,6 +544,7 @@ class LuckyNumberSpinner {
             const confetti = document.createElement('div');
             confetti.className = 'confetti';
             confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.top = -20 + 'px';
             confetti.style.animationDelay = Math.random() * 3 + 's';
             confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
             container.appendChild(confetti);

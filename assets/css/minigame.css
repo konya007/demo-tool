@@ -18,7 +18,7 @@ body {
     display: none;
     min-height: 100vh;
     padding: 20px;
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    background: linear-gradient(135deg, #12171a, #182024);
 }
 
 .admin-panel.active {
@@ -168,7 +168,7 @@ body {
     display: none;
     min-height: 100vh;
     padding: 20px;
-    background: linear-gradient(135deg, #0f0f23, #1a1a2e, #16213e);
+    background: linear-gradient(135deg, #080d0e, #191f25, #222a2b);
 }
 
 .presentation-panel.active {
@@ -238,7 +238,7 @@ body {
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+    background: #4ecdc4;
     width: 0%;
     transition: width 0.5s ease;
     border-radius: 6px;
