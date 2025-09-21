@@ -10,6 +10,18 @@ const musicData = [
                 "endLoop": 124
             },
             {
+                "title": "Tobu - Candyland",
+                "path": "./audio/nhacDao/Tobu - Candyland.mp3",
+                "startLoop": null,
+                "endLoop": null
+            },
+            {
+                "title": "Elektronomia - Sky High ｜ Progressive House ｜ NCS - Copyright Free Music.mp3",
+                "path": "./audio/nhacDao/Elektronomia - Sky High ｜ Progressive House ｜ NCS - Copyright Free Music.mp3",
+                "startLoop": null,
+                "endLoop": null
+            },
+            {
                 "title": "Herta-Space",
                 "path": "./audio/nhacDao/Herta-Space.mp3",
                 "startLoop": null,
@@ -60,6 +72,12 @@ const musicData = [
                 "path": "./audio/minigame-breaktime/Nhạc Xổ số Kiến thiết miền Bắc Bản kinh điển - KHÔNG QUẢNG CÁO.mp3",
                 "startLoop": null,
                 "endLoop": null
+            },
+            {
+                "title": "Hell Is Preferable to Nihility · Aventurine Boss Theme (Extended)",
+                "path": "./audio/minigame-breaktime/Hell Is Preferable to Nihility · Aventurine Boss Theme (Extended) - Honkai： Star Rail 2.1 OST.mp3",
+                "startLoop": null,
+                "endLoop": null
             }
         ]
     },
@@ -80,6 +98,7 @@ const musicData = [
             }
         ]
     },
+
     {
         "title": "Trao giải - Chúc mừng",
         "playlist": [
@@ -109,4 +128,5 @@ const musicData = [
             }
         ]
     }
-];
+
+]
