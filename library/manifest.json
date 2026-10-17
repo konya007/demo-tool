@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "intro-always-together",
+      "name": "Always Together",
+      "file": "intro/always-together.mp3",
+      "label": "intro",
+      "size": 2335892
+    },
+    {
+      "id": "intro-tobu-candyland",
+      "name": "Tobu - Candyland",
+      "file": "intro/tobu-candyland.mp3",
+      "label": "intro",
+      "size": 3353180
+    },
+    {
+      "id": "intro-elektronomia-sky-high",
+      "name": "Elektronomia - Sky High",
+      "file": "intro/elektronomia-sky-high.mp3",
+      "label": "intro",
+      "size": 4025732
+    },
+    {
+      "id": "intro-herta-space",
+      "name": "Herta Space",
+      "file": "intro/herta-space.mp3",
+      "label": "intro",
+      "size": 5300276
+    },
+    {
+      "id": "intro-infinity-castle-theme",
+      "name": "Infinity Castle Theme (Demon Slayer)",
+      "file": "intro/infinity-castle-theme.mp3",
+      "label": "intro",
+      "size": 4838014
+    },
+    {
+      "id": "intro-our-town-our-life",
+      "name": "Our Town, Our Life (Project SEKAI)",
+      "file": "intro/our-town-our-life.mp3",
+      "label": "intro",
+      "size": 2167254
+    },
+    {
+      "id": "intro-kimito-sono-saki-no-mirai-e",
+      "name": "キミと-その先の未来へ",
+      "file": "intro/kimito-sono-saki-no-mirai-e.mp3",
+      "label": "intro",
+      "size": 3365125
+    },
+    {
+      "id": "welcome-nhac-tien-vao-hoi",
+      "name": "Nhạc tiến vào hội",
+      "file": "welcome/nhac-tien-vao-hoi.mp3",
+      "label": "welcome",
+      "size": 6159742
+    },
+    {
+      "id": "introduce-nhac-tang-hoa-qua",
+      "name": "Nhạc tặng hoa - quà",
+      "file": "introduce/nhac-tang-hoa-qua.mp3",
+      "label": "introduce",
+      "size": 3918086
+    },
+    {
+      "id": "award-bond-fuego",
+      "name": "Bond - Fuego",
+      "file": "award/bond-fuego.mp3",
+      "label": "award",
+      "size": 2903612
+    },
+    {
+      "id": "award-disfigure-blank",
+      "name": "Disfigure - Blank",
+      "file": "award/disfigure-blank.mp3",
+      "label": "award",
+      "size": 3346318
+    },
+    {
+      "id": "award-nhac-vinh-danh",
+      "name": "Nhạc vinh danh cá nhân - tập thể",
+      "file": "award/nhac-vinh-danh.mp3",
+      "label": "award",
+      "size": 3032876
+    },
+    {
+      "id": "award-nhac-trao-giai-thuong",
+      "name": "Nhạc trao giải thưởng",
+      "file": "award/nhac-trao-giai-thuong.mp3",
+      "label": "award",
+      "size": 5752508
+    },
+    {
+      "id": "break-aventurine-boss-theme",
+      "name": "Aventurine Boss Theme (Honkai: Star Rail)",
+      "file": "break/aventurine-boss-theme.mp3",
+      "label": "break",
+      "size": 6204476
+    },
+    {
+      "id": "break-nhac-xo-so",
+      "name": "Nhạc xổ số kiến thiết",
+      "file": "break/nhac-xo-so.mp3",
+      "label": "break",
+      "size": 9582092
+    },
+    {
+      "id": "sfx-vo-tay",
+      "name": "Tiếng vỗ tay",
+      "file": "sfx/vo-tay.mp3",
+      "label": "sfx",
+      "size": 285167
+    },
+    {
+      "id": "sfx-kick",
+      "name": "Kick trống",
+      "file": "sfx/kick.wav",
+      "label": "sfx",
+      "size": 17742
+    }
+  ]
+}
