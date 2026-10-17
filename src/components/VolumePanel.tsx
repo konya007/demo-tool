@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react'
-import { ChevronDown, MicVocal, Volume2, VolumeX, Timer } from 'lucide-react'
+import { ChevronDown, MicVocal, Volume2, VolumeX, Timer, Zap, Square } from 'lucide-react'
 import { engine } from '../lib/audioEngine'
 import { actions, useApp } from '../lib/store'
-import { setVolume } from '../lib/player'
+import { setSfxVolume, setVolume } from '../lib/player'
 import { useEngine, useFrame } from '../lib/useEngine'
 import { HelpTip, Kbd } from './Common'
 
@@ -86,6 +86,17 @@ export function VolumePanel() {
           <Kbd k="M" />
         </button>
         <HelpTip section="duck" />
+      </div>
+
+      <div className={`sfx-row ${es.sfx.length ? 'active' : ''}`}>
+        <span className="sfx-label" title="Âm lượng riêng cho hiệu ứng phát chồng (không bị giảm nhanh)"><Zap size={14} /> Hiệu ứng</span>
+        <input type="range" min={0} max={100} value={es.sfxVolume} aria-label="Âm lượng hiệu ứng"
+          onChange={(e) => setSfxVolume(Number(e.target.value))} />
+        <b>{es.sfxVolume}%</b>
+        <button className="icon-btn ghost" disabled={!es.sfx.length} title="Dừng tất cả hiệu ứng (X)" onClick={() => engine.stopSfx()}>
+          <Square size={13} />
+        </button>
+        <HelpTip section="sfx" />
       </div>
 
       <button className={`more-toggle ${more ? 'open' : ''}`} onClick={() => setMore(!more)}>

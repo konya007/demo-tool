@@ -41,6 +41,9 @@ export function useHotkeys(opts: { openHelp: () => void; focusSearch: () => void
         case 'ESCAPE':
           engine.stop()
           break
+        case 'X':
+          engine.stopSfx()
+          break
         case 'M':
           engine.setMuted(!engine.getState().muted)
           break

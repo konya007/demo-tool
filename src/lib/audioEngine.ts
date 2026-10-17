@@ -84,6 +84,9 @@ export interface EngineState {
   muted: boolean
   loop: boolean
   volume: number // % mục tiêu
+  /** id các hiệu ứng (SFX) đang phát chồng */
+  sfx: string[]
+  sfxVolume: number
 }
 
 export interface EngineConfig {
@@ -101,6 +104,8 @@ class AudioEngine {
   private master!: Fader
   private duck!: Fader
   private mute!: Fader
+  private sfxBus!: Fader
+  private sfxVoices = new Map<string, Deck>()
   analyser!: AnalyserNode
   private current: Deck | null = null
   private outgoing = new Set<Deck>()
@@ -114,7 +119,7 @@ class AudioEngine {
   private initialVolume = 70
 
   constructor() {
-    this.stateSnapshot = { trackId: null, status: 'idle', ducked: false, muted: false, loop: false, volume: 70 }
+    this.stateSnapshot = { trackId: null, status: 'idle', ducked: false, muted: false, loop: false, volume: 70, sfx: [], sfxVolume: 100 }
   }
 
   // ---------- state / subscribe ----------
@@ -128,9 +133,9 @@ class AudioEngine {
     this.listeners.forEach((l) => l())
   }
 
-  setInitialVolume(v: number) {
+  setInitialVolume(v: number, sfx: number) {
     this.initialVolume = v
-    this.set({ volume: v })
+    this.set({ volume: v, sfxVolume: sfx })
   }
 
   /** Tạo AudioContext (cần thao tác người dùng để trình duyệt cho phép phát) */
@@ -143,11 +148,15 @@ class AudioEngine {
       this.analyser = ctx.createAnalyser()
       this.analyser.fftSize = 1024
       this.analyser.smoothingTimeConstant = 0.6
+      const sfxBus = ctx.createGain()
       master.connect(duck).connect(mute).connect(this.analyser).connect(ctx.destination)
+      // SFX đi thẳng vào mute: không bị crossfade hay giảm nhanh (duck) ảnh hưởng
+      sfxBus.connect(mute)
       this.ctx = ctx
       this.master = new Fader(ctx, master, perceptual, this.initialVolume / 100)
       this.duck = new Fader(ctx, duck, perceptual, 1)
       this.mute = new Fader(ctx, mute, perceptual, 1)
+      this.sfxBus = new Fader(ctx, sfxBus, perceptual, this.stateSnapshot.sfxVolume / 100)
     }
     if (this.ctx.state === 'suspended') void this.ctx.resume()
     return this.ctx
@@ -249,6 +258,9 @@ class AudioEngine {
   panic() {
     if (this.current) this.dispose(this.current)
     this.outgoing.forEach((d) => this.dispose(d))
+    this.sfxVoices.forEach((d) => this.dispose(d))
+    this.sfxVoices.clear()
+    this.syncSfx()
     this.current = null
     this.set({ status: 'idle' })
   }
@@ -270,11 +282,66 @@ class AudioEngine {
 
   /** Bài đang phát bị xóa/sửa */
   syncTrack(track: Track) {
+    const v = this.sfxVoices.get(track.id)
+    if (v) v.audio.loop = track.loop
     if (this.current?.track.id === track.id) {
       this.current.track = track
       this.current.audio.loop = track.loop
       this.set({ loop: track.loop })
     }
+  }
+
+  // ---------- hiệu ứng (SFX) phát chồng ----------
+  isSfxPlaying = (id: string) => this.sfxVoices.has(id)
+
+  /** Phát SFX chồng lên nhạc; đang phát thì bấm lại để dừng */
+  async toggleSfx(track: Track, blob: Blob) {
+    if (this.sfxVoices.has(track.id)) return this.stopSfx(track.id)
+    const ctx = this.ensure()
+    const url = URL.createObjectURL(blob)
+    const audio = new Audio(url)
+    audio.loop = track.loop
+    const source = ctx.createMediaElementSource(audio)
+    const gain = ctx.createGain()
+    source.connect(gain).connect(this.sfxBus.node)
+    const voice: Deck = { track, audio, source, fader: new Fader(ctx, gain, perceptual, 1), url }
+    this.sfxVoices.set(track.id, voice)
+    this.syncSfx()
+    audio.addEventListener('ended', () => {
+      if (this.sfxVoices.get(track.id) === voice) this.sfxVoices.delete(track.id)
+      this.dispose(voice)
+      this.syncSfx()
+    })
+    try {
+      await audio.play()
+    } catch (err) {
+      if (this.sfxVoices.get(track.id) === voice) this.sfxVoices.delete(track.id)
+      this.dispose(voice)
+      this.syncSfx()
+      throw err
+    }
+  }
+
+  stopSfx(id?: string, ms = 300) {
+    const ids = id ? [id] : [...this.sfxVoices.keys()]
+    for (const k of ids) {
+      const v = this.sfxVoices.get(k)
+      if (!v) continue
+      this.sfxVoices.delete(k)
+      v.fader.rampTo(0, ms)
+      v.timer = window.setTimeout(() => this.dispose(v), ms + 60)
+    }
+    this.syncSfx()
+  }
+
+  private syncSfx() {
+    this.set({ sfx: [...this.sfxVoices.keys()] })
+  }
+
+  setSfxVolume(pct: number) {
+    const v = Math.round(Math.max(0, Math.min(100, pct)))
+    this.set({ sfxVolume: v })
+    if (this.ctx) this.sfxBus.rampTo(v / 100, 120)
   }
 
   // ---------- âm lượng ----------

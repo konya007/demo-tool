@@ -13,6 +13,7 @@ const KEYS: [string[], string][] = [
   [['[', ']'], 'Chọn (cue) bài trước / sau trong danh sách'],
   [['ARROWUP', 'ARROWDOWN'], 'Tăng / giảm âm lượng (chuyển mượt)'],
   [['ARROWLEFT', 'ARROWRIGHT'], 'Tua lùi / tới'],
+  [['X'], 'Dừng tất cả hiệu ứng (SFX) đang phát chồng'],
   [['M'], 'Tắt / bật tiếng (fade)'],
   [['L'], 'Bật / tắt lặp bài đang phát'],
   [['/'], 'Tìm bài'],
@@ -55,7 +56,7 @@ export function HelpDialog({ section = 'keys' }: { section?: HelpSection }) {
             <li>Khi diễn: chỉ cần bấm phím đó, bài sẽ chuyển sang mượt (crossfade).</li>
             <li>Chuột phải vào ô để đổi bài; Backspace khi đang gán để gỡ phím.</li>
           </ol>
-          <p className="muted small">Các phím hệ thống (Space, Enter, P, S, N, M, L, mũi tên, [ ], / , ?) không gán được.</p>
+          <p className="muted small">Các phím hệ thống (Space, Enter, P, S, N, X, M, L, mũi tên, [ ], / , ?) không gán được.</p>
         </section>
 
         <section data-sec="volume">
@@ -80,6 +81,18 @@ export function HelpDialog({ section = 'keys' }: { section?: HelpSection }) {
             <li>Tạm dừng / tiếp tục (<Kbd k="P" />): fade {sec(s.pauseFadeMs)}.</li>
             <li><b>Cue + GO</b>: click 1 bài để chọn sẵn (viền sáng), đến lúc thì bấm <Kbd k="ENTER" />. Đúp chuột để phát ngay.</li>
             <li>Kéo thả bài để đổi thứ tự hoặc chuyển sang nhãn khác.</li>
+          </ul>
+        </section>
+
+        <section data-sec="sfx">
+          <h4>⚡ Nhạc &amp; Hiệu ứng (phát chồng)</h4>
+          <p>Mỗi bài có 1 trong 2 loại, chọn khi tải lên, trong “Sửa bài” hoặc bấm biểu tượng ⚡ ở từng bài:</p>
+          <ul>
+            <li><b>Nhạc</b>: phát bài này sẽ crossfade thay cho bài đang chạy. Chỉ 1 bài nhạc phát tại một thời điểm.</li>
+            <li><b>Hiệu ứng</b> (VD tiếng vỗ tay, trống, chuông): <b>phát chồng</b> lên nhạc đang chạy, không làm dừng nhạc.
+              Có thể nhiều hiệu ứng cùng lúc. Bấm lại (hoặc phím đã gán) để tắt, <Kbd k="X" /> để tắt hết.</li>
+            <li>Hiệu ứng có thanh âm lượng riêng và <b>không bị</b> giảm nhanh (Space), để vỗ tay vẫn rõ khi MC nói.</li>
+            <li>Bài thuộc nhãn “Hiệu ứng âm thanh” mặc định là hiệu ứng.</li>
           </ul>
         </section>
 

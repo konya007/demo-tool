@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { db } from './db'
-import { DEFAULT_LABELS, DEFAULT_SETTINGS } from './defaults'
+import { DEFAULT_LABELS, DEFAULT_SETTINGS, SFX_LABEL_ID } from './defaults'
 import { engine } from './audioEngine'
 import type { Label, LibraryItem, Settings, Track } from './types'
 
@@ -102,8 +102,10 @@ export const actions = {
     }
     const settings = { ...DEFAULT_SETTINGS, ...saved }
     applyEngineConfig(settings)
-    engine.setInitialVolume(settings.volume)
-    set({ ready: true, tracks: sortTracks(tracks), labels: sortLabels(finalLabels), settings })
+    engine.setInitialVolume(settings.volume, settings.sfxVolume)
+    // dữ liệu cũ chưa có "kind"
+    const normalized = tracks.map((t) => (t.kind ? t : { ...t, kind: t.labelId === SFX_LABEL_ID ? 'sfx' as const : 'music' as const }))
+    set({ ready: true, tracks: sortTracks(normalized), labels: sortLabels(finalLabels), settings })
   },
 
   // ---------- settings ----------
@@ -133,6 +135,7 @@ export const actions = {
       mime: blob.type || 'audio/mpeg',
       hotkey: null,
       loop: false,
+      kind: meta.labelId === SFX_LABEL_ID ? 'sfx' : 'music',
       source: 'upload',
       createdAt: Date.now(),
       order: maxOrder + 1,

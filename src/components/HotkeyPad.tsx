@@ -1,4 +1,4 @@
-import { Grid3x3, Plus } from 'lucide-react'
+import { Grid3x3, Plus, Zap } from 'lucide-react'
 import { useApp } from '../lib/store'
 import { engine } from '../lib/audioEngine'
 import { playTrack } from '../lib/player'
@@ -17,12 +17,12 @@ export function HotkeyPad() {
   const slot = (key: string) => {
     const t = byKey.get(key)
     const label = labels.find((l) => l.id === t?.labelId)
-    const playing = t && es.trackId === t.id && es.status === 'playing'
+    const playing = t && (t.kind === 'sfx' ? es.sfx.includes(t.id) : es.trackId === t.id && es.status === 'playing')
     return (
-      <button key={key} className={`pad ${t ? '' : 'pad-empty'} ${playing ? 'is-playing' : ''}`}
+      <button key={key} className={`pad ${t?.kind === 'sfx' ? 'pad-sfx' : ''} ${t ? '' : 'pad-empty'} ${playing ? 'is-playing' : ''}`}
         style={{ '--c': label?.color ?? 'var(--line)' } as React.CSSProperties}
         title={t ? `${t.name} — click để phát, chuột phải để đổi` : 'Gán bài cho phím này'}
-        onClick={() => (t ? (playing ? engine.togglePause() : void playTrack(t.id)) : openDialog({ kind: 'assignKey', key }))}
+        onClick={() => (t ? (playing && t.kind !== 'sfx' ? engine.togglePause() : void playTrack(t.id)) : openDialog({ kind: 'assignKey', key }))}
         onContextMenu={(e) => {
           e.preventDefault()
           openDialog({ kind: 'assignKey', key })
@@ -30,7 +30,7 @@ export function HotkeyPad() {
         <span className="pad-key">{key}</span>
         {t ? (
           <>
-            <span className="pad-icon"><LabelIcon name={label?.icon ?? 'Music'} size={13} /></span>
+            <span className="pad-icon">{t.kind === 'sfx' ? <Zap size={13} /> : <LabelIcon name={label?.icon ?? 'Music'} size={13} />}</span>
             <span className="pad-name">{t.name}</span>
           </>
         ) : <Plus size={14} className="pad-plus" />}

@@ -2,10 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import { FileAudio, Tags, Trash2, Upload, X } from 'lucide-react'
 import { actions, probeDuration, toast, uid, useApp } from '../../lib/store'
 import { closeDialog } from '../../lib/ui'
-import { COLOR_SWATCHES } from '../../lib/defaults'
+import { COLOR_SWATCHES, SFX_LABEL_ID } from '../../lib/defaults'
 import { fmtSize, fmtTime, stripExt } from '../../lib/format'
 import type { UploadDraft } from '../../lib/types'
-import { LabelIcon, Modal } from '../Common'
+import { KindToggle, LabelIcon, Modal } from '../Common'
+
+/** Gợi ý loại: thuộc nhãn hiệu ứng hoặc tên file giống hiệu ứng → hiệu ứng */
+const kindFor = (labelId: string, file: File) =>
+  labelId === SFX_LABEL_ID || /sfx|effect|hieu.?ung|vo.?tay|applause/i.test(file.name) ? 'sfx' as const : 'music' as const
 
 const isAudio = (f: File) => f.type.startsWith('audio/') || /\.(mp3|wav|ogg|m4a|aac|flac|opus|webm)$/i.test(f.name)
 
@@ -21,7 +25,7 @@ export function UploadDialog({ files, labelId }: { files?: File[]; labelId?: str
   const addFiles = (list: File[]) => {
     const audio = list.filter(isAudio)
     if (audio.length < list.length) toast(`Bỏ qua ${list.length - audio.length} file không phải âm thanh`, 'error')
-    const next = audio.map((file) => ({ key: uid(), file, name: stripExt(file.name), labelId: defaultLabel, duration: 0 }))
+    const next = audio.map((file) => ({ key: uid(), file, name: stripExt(file.name), labelId: defaultLabel, kind: kindFor(defaultLabel, file), duration: 0 }))
     setDrafts((d) => [...d, ...next])
     next.forEach((d) =>
       probeDuration(d.file).then((duration) =>
@@ -38,7 +42,7 @@ export function UploadDialog({ files, labelId }: { files?: File[]; labelId?: str
 
   const applyAll = (id: string) => {
     setDefaultLabel(id)
-    if (id) setDrafts((d) => d.map((x) => ({ ...x, labelId: id })))
+    if (id) setDrafts((d) => d.map((x) => ({ ...x, labelId: id, kind: kindFor(id, x.file) })))
   }
 
   const missing = drafts.filter((d) => !d.labelId || !d.name.trim())
@@ -48,7 +52,7 @@ export function UploadDialog({ files, labelId }: { files?: File[]; labelId?: str
     setSaving(true)
     let i = 0
     for (const d of drafts) {
-      await actions.addTrack(d.file, { name: d.name.trim(), labelId: d.labelId, duration: d.duration || undefined })
+      await actions.addTrack(d.file, { name: d.name.trim(), labelId: d.labelId, kind: d.kind, duration: d.duration || undefined })
       setProgress(++i / drafts.length)
     }
     toast(`Đã thêm ${drafts.length} bài nhạc`, 'success')
@@ -112,7 +116,8 @@ export function UploadDialog({ files, labelId }: { files?: File[]; labelId?: str
                     {d.file.name} · {fmtSize(d.file.size)} · {d.duration ? fmtTime(d.duration) : '…'}
                   </span>
                 </div>
-                <LabelSelect value={d.labelId} onChange={(id) => update(d.key, { labelId: id })} labels={labels} />
+                <KindToggle compact value={d.kind} onChange={(kind) => update(d.key, { kind })} />
+                <LabelSelect value={d.labelId} onChange={(id) => update(d.key, { labelId: id, kind: kindFor(id, d.file) })} labels={labels} />
                 <button className="icon-btn ghost danger" title="Bỏ file này"
                   onClick={() => setDrafts((all) => all.filter((x) => x.key !== d.key))}>
                   <Trash2 size={15} />

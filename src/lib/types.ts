@@ -6,6 +6,8 @@ export interface Label {
   order: number
 }
 
+export type TrackKind = 'music' | 'sfx'
+
 export interface Track {
   id: string
   name: string
@@ -15,6 +17,8 @@ export interface Track {
   mime: string
   hotkey: string | null
   loop: boolean
+  /** music: đổi bài có crossfade; sfx: phát chồng lên nhạc đang chạy */
+  kind: TrackKind
   source: 'upload' | 'library'
   libraryId?: string
   createdAt: number
@@ -42,6 +46,7 @@ export interface Settings {
   seekStep: number
   autoNext: boolean
   volume: number
+  sfxVolume: number
   collapsed: string[]
 }
 
@@ -58,5 +63,6 @@ export interface UploadDraft {
   file: File
   name: string
   labelId: string
+  kind: TrackKind
   duration: number
 }

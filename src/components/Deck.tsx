@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Pause, Play, Repeat, SkipBack, SkipForward, Square, ChevronsRight, Shuffle } from 'lucide-react'
+import { Pause, Play, Repeat, SkipBack, SkipForward, Square, ChevronsRight, Shuffle, Zap, X } from 'lucide-react'
 import { engine } from '../lib/audioEngine'
 import { useApp } from '../lib/store'
 import { go, playNext, toggleLoop } from '../lib/player'
@@ -78,8 +78,28 @@ export function Deck() {
         <button className={`t-btn ${es.loop ? 'on' : ''}`} title="Lặp bài đang phát (L)" onClick={toggleLoop} disabled={!active}><Repeat size={17} /></button>
       </div>
 
+      <SfxStrip />
       <CueCard />
     </section>
+  )
+}
+
+/** Các hiệu ứng đang phát chồng */
+function SfxStrip() {
+  const ids = useEngine().sfx
+  const tracks = useApp((s) => s.tracks)
+  if (!ids.length) return null
+  return (
+    <div className="sfx-strip">
+      {ids.map((id) => {
+        const t = tracks.find((x) => x.id === id)
+        return (
+          <button key={id} className="sfx-chip" title="Bấm để dừng hiệu ứng" onClick={() => engine.stopSfx(id)}>
+            <span className="eq"><i /><i /><i /></span><Zap size={12} /> {t?.name ?? 'Hiệu ứng'} <X size={12} />
+          </button>
+        )
+      })}
+    </div>
   )
 }
 

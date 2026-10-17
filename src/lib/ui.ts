@@ -9,7 +9,7 @@ export type Dialog =
   | { kind: 'track'; trackId: string }
   | { kind: 'assignKey'; key: string }
 
-export type HelpSection = 'keys' | 'volume' | 'duck' | 'hotkeys' | 'library' | 'transition'
+export type HelpSection = 'keys' | 'volume' | 'duck' | 'hotkeys' | 'library' | 'transition' | 'sfx'
 
 let dialog: Dialog | null = null
 const listeners = new Set<() => void>()

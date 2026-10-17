@@ -5,7 +5,8 @@ import { closeDialog } from '../../lib/ui'
 import { displayKey, keyName } from '../../lib/hotkeys'
 import { RESERVED_KEYS } from '../../lib/defaults'
 import { fmtSize, fmtTime } from '../../lib/format'
-import { HelpTip, Kbd, LabelIcon, Modal, Switch } from '../Common'
+import { HelpTip, Kbd, KindToggle, LabelIcon, Modal, Switch } from '../Common'
+import { engine } from '../../lib/audioEngine'
 import { LabelSelect } from './UploadDialog'
 
 export function TrackDialog({ trackId }: { trackId: string }) {
@@ -14,11 +15,17 @@ export function TrackDialog({ trackId }: { trackId: string }) {
   const [name, setName] = useState(track?.name ?? '')
   const [labelId, setLabelId] = useState(track?.labelId ?? '')
   const [loop, setLoop] = useState(track?.loop ?? false)
+  const [kind, setKind] = useState(track?.kind ?? 'music')
   const [hotkey, setHotkey] = useState<string | null>(track?.hotkey ?? null)
 
   if (!track) return null
   const save = () => {
-    void actions.updateTrack(track.id, { name: name.trim() || track.name, labelId, loop, hotkey })
+    // đổi loại khi đang phát: dừng bản đang chạy theo loại cũ
+    if (kind !== track.kind) {
+      if (engine.isSfxPlaying(track.id)) engine.stopSfx(track.id)
+      else if (engine.getState().trackId === track.id && engine.getState().status !== 'idle') engine.stop(400)
+    }
+    void actions.updateTrack(track.id, { name: name.trim() || track.name, labelId, loop, hotkey, kind })
     closeDialog()
   }
 
@@ -37,6 +44,13 @@ export function TrackDialog({ trackId }: { trackId: string }) {
         <div className="field">
           <label>Nhãn</label>
           <LabelSelect value={labelId} onChange={setLabelId} labels={labels} />
+        </div>
+        <div className="field">
+          <label>Loại <HelpTip section="sfx" /></label>
+          <KindToggle value={kind} onChange={setKind} />
+          <small className="muted">{kind === 'sfx'
+            ? 'Phát chồng lên nhạc đang chạy, không làm dừng nhạc. Bấm lại để tắt. Không bị giảm nhanh (Space).'
+            : 'Phát bài này sẽ crossfade thay cho bài đang phát.'}</small>
         </div>
         <div className="field">
           <label>Phím phát nhanh <HelpTip section="hotkeys" /></label>

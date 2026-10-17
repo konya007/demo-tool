@@ -23,6 +23,7 @@ export const DEFAULT_SETTINGS: Settings = {
   seekStep: 5,
   autoNext: false,
   volume: 70,
+  sfxVolume: 100,
   collapsed: [],
 }
 
@@ -33,7 +34,10 @@ export const COLOR_SWATCHES = [
 ]
 
 /** Phím cố định của hệ thống — không cho gán làm phím tắt bài nhạc */
-export const RESERVED_KEYS = new Set([' ', 'ENTER', 'ESCAPE', 'P', 'M', 'L', 'N', 'S', '?', '/', '[', ']',
+export const RESERVED_KEYS = new Set([' ', 'ENTER', 'ESCAPE', 'P', 'M', 'L', 'N', 'S', 'X', '?', '/', '[', ']',
   'ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'TAB'])
+
+/** Nhãn mà bài thuộc về sẽ mặc định là hiệu ứng */
+export const SFX_LABEL_ID = 'sfx'
 
 export const PAD_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']

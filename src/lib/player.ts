@@ -18,7 +18,8 @@ export async function playTrack(id: string) {
     return
   }
   try {
-    await engine.play(track, blob)
+    if (track.kind === 'sfx') await engine.toggleSfx(track, blob)
+    else await engine.play(track, blob)
   } catch (err) {
     toast(`Không phát được "${track.name}": ${(err as Error).message}`, 'error')
   }
@@ -49,7 +50,8 @@ export function neighbor(id: string, dir: 1 | -1, sameLabel: boolean): Track | u
 export function playNext(dir: 1 | -1 = 1) {
   const cur = engine.getState().trackId ?? getState().cueId
   if (!cur) return
-  const n = neighbor(cur, dir, true)
+  let n = neighbor(cur, dir, true)
+  while (n && n.kind === 'sfx') n = neighbor(n.id, dir, true)
   if (n) void playTrack(n.id)
   else toast('Đã hết bài trong nhóm này')
 }
@@ -81,9 +83,15 @@ export function toggleLoop() {
   if (track) void actions.updateTrack(id, { loop: !track.loop })
 }
 
+export function setSfxVolume(pct: number) {
+  engine.setSfxVolume(pct)
+  actions.updateSettings({ sfxVolume: engine.getState().sfxVolume })
+}
+
 engine.onEnded = (id) => {
   if (getState().settings.autoNext) {
-    const n = neighbor(id, 1, true)
+    let n = neighbor(id, 1, true)
+    while (n && n.kind === 'sfx') n = neighbor(n.id, 1, true)
     if (n) void playTrack(n.id)
   }
 }

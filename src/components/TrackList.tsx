@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type DragEvent } from 'react'
-import { ChevronDown, Library, Pencil, Play, Plus, Repeat, Trash2, Upload, Pause, Keyboard } from 'lucide-react'
+import { ChevronDown, Library, Pencil, Play, Plus, Repeat, Trash2, Upload, Pause, Keyboard, Zap, Square } from 'lucide-react'
 import { actions, useApp } from '../lib/store'
 import { engine } from '../lib/audioEngine'
 import { playTrack } from '../lib/player'
@@ -94,8 +94,10 @@ function Group({ label, tracks, collapsed }: { label: Label; tracks: Track[]; co
 function Row({ track, index, labelId }: { track: Track; index: number; labelId: string }) {
   const cueId = useApp((s) => s.cueId)
   const es = useEngine()
-  const isCurrent = es.trackId === track.id && es.status !== 'idle'
-  const isPlaying = isCurrent && es.status === 'playing'
+  const isSfx = track.kind === 'sfx'
+  const sfxOn = isSfx && es.sfx.includes(track.id)
+  const isCurrent = sfxOn || (!isSfx && es.trackId === track.id && es.status !== 'idle')
+  const isPlaying = sfxOn || (isCurrent && es.status === 'playing')
   const [dropBefore, setDropBefore] = useState(false)
   const [confirmDel, setConfirmDel] = useState(false)
 
@@ -108,7 +110,7 @@ function Row({ track, index, labelId }: { track: Track; index: number; labelId: 
   return (
     <div
       data-track={track.id}
-      className={`row ${cueId === track.id ? 'is-cue' : ''} ${isCurrent ? 'is-current' : ''} ${isPlaying ? 'is-playing' : ''} ${dropBefore ? 'drop-before' : ''}`}
+      className={`row ${isSfx ? 'is-sfx' : ''} ${cueId === track.id ? 'is-cue' : ''} ${isCurrent ? 'is-current' : ''} ${isPlaying ? 'is-playing' : ''} ${dropBefore ? 'drop-before' : ''}`}
       draggable
       onDragStart={(e) => {
         e.dataTransfer.setData(DRAG_MIME, track.id)
@@ -133,22 +135,23 @@ function Row({ track, index, labelId }: { track: Track; index: number; labelId: 
       onClick={() => actions.setCue(track.id)}
       onDoubleClick={() => void playTrack(track.id)}
     >
-      {isCurrent && <RowProgress />}
+      {isCurrent && !isSfx && <RowProgress />}
       <span className="row-num">
         {isPlaying ? <span className="eq"><i /><i /><i /></span> : index}
       </span>
-      <button className="row-play" title={isPlaying ? 'Tạm dừng' : 'Phát ngay'}
+      <button className="row-play" title={isSfx ? (sfxOn ? 'Dừng hiệu ứng' : 'Phát chồng lên nhạc') : isPlaying ? 'Tạm dừng' : 'Phát ngay'}
         onClick={(e) => {
           e.stopPropagation()
-          if (isCurrent) engine.togglePause()
+          if (isCurrent && !isSfx) engine.togglePause()
           else void playTrack(track.id)
         }}>
-        {isPlaying ? <Pause size={15} /> : <Play size={15} />}
+        {sfxOn ? <Square size={13} /> : isPlaying ? <Pause size={15} /> : isSfx ? <Zap size={15} /> : <Play size={15} />}
       </button>
       <div className="row-title">
         <span className="name" title={track.name}>{track.name}</span>
         <span className="sub">
           {fmtTime(track.duration)}
+          {isSfx && <span className="tag tag-sfx"><Zap size={11} /> Hiệu ứng</span>}
           {track.source === 'library' && <span className="tag"><Library size={11} /> Mẫu</span>}
           {cueId === track.id && <span className="tag tag-cue">CUE · Enter để phát</span>}
         </span>
@@ -160,6 +163,16 @@ function Row({ track, index, labelId }: { track: Track; index: number; labelId: 
             openDialog({ kind: 'track', trackId: track.id })
           }}>
           {track.hotkey ? <Kbd k={track.hotkey} /> : <Keyboard size={14} />}
+        </button>
+        <button className={`icon-btn ghost ${isSfx ? 'on' : ''}`}
+          title={isSfx ? 'Đang là hiệu ứng (phát chồng) — bấm để chuyển thành nhạc' : 'Đang là nhạc — bấm để chuyển thành hiệu ứng phát chồng'}
+          onClick={(e) => {
+            e.stopPropagation()
+            if (sfxOn) engine.stopSfx(track.id)
+            else if (isCurrent) engine.stop(400)
+            void actions.updateTrack(track.id, { kind: isSfx ? 'music' : 'sfx' })
+          }}>
+          <Zap size={15} />
         </button>
         <button className={`icon-btn ghost ${track.loop ? 'on' : ''}`} title="Lặp lại bài này"
           onClick={(e) => {

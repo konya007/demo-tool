@@ -8,6 +8,7 @@ import {
 import { closeDialog, openDialog, type HelpSection } from '../lib/ui'
 import { useApp } from '../lib/store'
 import { displayKey } from '../lib/hotkeys'
+import type { TrackKind } from '../lib/types'
 
 export const LABEL_ICONS: Record<string, LucideIcon> = {
   Sunrise, DoorOpen, Mic, MicVocal, Trophy, Award, Medal, Crown, Star, Sparkles, PartyPopper, Gift, Heart,
@@ -85,6 +86,22 @@ export function Toasts() {
       {toasts.map((t) => (
         <div key={t.id} className={`toast toast-${t.tone}`}>{t.text}</div>
       ))}
+    </div>
+  )
+}
+
+/** Chọn loại bài: nhạc (crossfade) hay hiệu ứng (phát chồng) */
+export function KindToggle({ value, onChange, compact }: { value: TrackKind; onChange: (k: TrackKind) => void; compact?: boolean }) {
+  return (
+    <div className={`seg kind-seg ${compact ? 'compact' : ''}`}>
+      <button type="button" className={value === 'music' ? 'on' : ''} onClick={() => onChange('music')}
+        title="Đổi bài: bài đang phát sẽ crossfade sang bài này">
+        <Music size={13} /> Nhạc
+      </button>
+      <button type="button" className={value === 'sfx' ? 'on sfx' : ''} onClick={() => onChange('sfx')}
+        title="Phát chồng lên nhạc đang chạy (VD tiếng vỗ tay)">
+        <Zap size={13} /> Hiệu ứng
+      </button>
     </div>
   )
 }
